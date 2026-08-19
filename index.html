@@ -8,18 +8,17 @@
     <title>اتجاه القبلة</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <main class="container">
         <header class="header">
             <h1>اتجاه القبلة</h1>
-            <p class="subtitle">حدد اتجاه الكعبة المشرفة من موقعك</p>
+            <p class="subtitle">حدد اتجاه الكعبة المشرفة</p>
         </header>
 
         <section class="qibla-display" id="qiblaDisplay">
             <div class="compass-wrapper">
-                <div class="compass-ring">
+                <div class="compass-ring" id="compassRing">
                     <svg viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="46" fill="none" stroke="#e0e0e0" stroke-width="1.5"/>
                         <circle cx="50" cy="50" r="40" fill="none" stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="2,4"/>
@@ -27,10 +26,6 @@
                         <line x1="50" y1="89" x2="50" y2="95" stroke="#999" stroke-width="1"/>
                         <line x1="5" y1="50" x2="11" y2="50" stroke="#999" stroke-width="1"/>
                         <line x1="89" y1="50" x2="95" y2="50" stroke="#999" stroke-width="1"/>
-                        <line x1="17.3" y1="17.3" x2="21.5" y2="21.5" stroke="#ccc" stroke-width="0.5"/>
-                        <line x1="82.7" y1="17.3" x2="78.5" y2="21.5" stroke="#ccc" stroke-width="0.5"/>
-                        <line x1="17.3" y1="82.7" x2="21.5" y2="78.5" stroke="#ccc" stroke-width="0.5"/>
-                        <line x1="82.7" y1="82.7" x2="78.5" y2="78.5" stroke="#ccc" stroke-width="0.5"/>
                         <text x="50" y="10" text-anchor="middle" fill="#d93025" font-size="6" font-weight="700">شمال</text>
                         <text x="50" y="98" text-anchor="middle" fill="#999" font-size="5.5">جنوب</text>
                         <text x="3" y="53" text-anchor="middle" fill="#999" font-size="5.5">غرب</text>
@@ -56,28 +51,15 @@
                 <span class="bearing-value" id="bearingValue">--</span>
                 <span class="bearing-unit">°</span>
             </div>
-            <p class="bearing-direction" id="bearingDirection">في انتظار تحديد الموقع...</p>
+            <p class="bearing-direction" id="bearingDirection">اضغط للبدء</p>
             <div class="compass-status" id="compassStatus">
                 <span class="pulse"></span>
                 <span>حرّك الهاتف — السهم يُشير للقبلة</span>
             </div>
         </section>
 
-        <section class="location-section">
-            <button id="getLocationBtn" class="btn btn-primary">تحديد موقعي تلقائياً</button>
-            <button id="compassBtn" class="btn btn-compass" style="display:none;">تفعيل البوصلة</button>
-            <p class="or-text">أو</p>
-            <form id="manualForm" class="manual-form">
-                <div class="input-group">
-                    <label for="latInput">خط العرض</label>
-                    <input type="number" id="latInput" step="any" placeholder="مثال: 24.7136" required>
-                </div>
-                <div class="input-group">
-                    <label for="lngInput">خط الطول</label>
-                    <input type="number" id="lngInput" step="any" placeholder="مثال: 46.6753" required>
-                </div>
-                <button type="submit" class="btn btn-secondary">حساب الاتجاه</button>
-            </form>
+        <section class="action-section">
+            <button id="startBtn" class="btn btn-primary btn-large">تحديد اتجاه القبلة</button>
             <p class="error-message" id="errorMessage"></p>
         </section>
 
@@ -86,13 +68,13 @@
         </section>
 
         <section class="qr-section">
-            <p class="qr-title">امسح الرمز للفتح على هاتفك</p>
+            <p class="qr-title">امسح للفتح على هاتف آخر</p>
             <div id="qrcode" class="qr-code"></div>
-            <p class="qr-link" id="qrLink"></p>
         </section>
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="js/qibla.js"></script>
     <script src="js/map.js"></script>
     <script src="js/ui.js"></script>

@@ -35,18 +35,18 @@ body {
     width: 100%;
     max-width: 520px;
     margin: 0 auto;
-    padding: clamp(12px, 3vw, 24px);
+    padding: clamp(12px, 3vw, 20px);
 }
 
 .header {
     text-align: center;
-    margin-bottom: clamp(16px, 4vw, 32px);
+    margin-bottom: clamp(16px, 4vw, 28px);
 }
 
 .header h1 {
     font-size: clamp(1.3rem, 5vw, 1.75rem);
     font-weight: 700;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .subtitle {
@@ -57,10 +57,10 @@ body {
 .qibla-display {
     background: var(--card-bg);
     border-radius: var(--radius);
-    padding: clamp(16px, 4vw, 32px);
+    padding: clamp(16px, 4vw, 28px);
     text-align: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    margin-bottom: clamp(12px, 3vw, 24px);
+    margin-bottom: clamp(12px, 3vw, 20px);
 }
 
 .compass-wrapper {
@@ -80,12 +80,6 @@ body {
     height: 100%;
 }
 
-.compass-label {
-    font-size: 7px;
-    fill: var(--text-secondary);
-    font-weight: 600;
-}
-
 .qibla-arrow-center {
     position: absolute;
     top: 50%;
@@ -93,13 +87,13 @@ body {
     width: 0;
     height: 0;
     transform-origin: center center;
-    transition: transform 0.2s ease-out;
+    transition: transform 0.15s ease-out;
 }
 
 .qibla-arrow-center svg {
     position: absolute;
     transform: translate(-50%, -100%);
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 
 .bearing-info {
@@ -115,7 +109,7 @@ body {
 
 .bearing-direction {
     color: var(--text-secondary);
-    margin-top: 6px;
+    margin-top: 4px;
     font-size: clamp(0.8rem, 2.5vw, 0.95rem);
 }
 
@@ -146,29 +140,29 @@ body {
     50% { opacity: 0.5; transform: scale(0.8); }
 }
 
-.location-section {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    padding: clamp(16px, 4vw, 24px);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    margin-bottom: clamp(12px, 3vw, 24px);
+.action-section {
+    margin-bottom: clamp(12px, 3vw, 20px);
 }
 
 .btn {
     display: block;
     width: 100%;
-    padding: clamp(10px, 2.5vw, 14px);
     border: none;
-    border-radius: 8px;
-    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
     -webkit-tap-highlight-color: transparent;
+    text-align: center;
 }
 
 .btn:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
+}
+
+.btn-large {
+    padding: clamp(14px, 3vw, 18px);
+    font-size: clamp(1rem, 3vw, 1.15rem);
 }
 
 .btn-primary {
@@ -180,69 +174,17 @@ body {
     background: var(--primary-dark);
 }
 
-.btn-secondary {
-    background: var(--border);
-    color: var(--text);
-}
-
-.btn-secondary:hover {
-    background: #c0c0c0;
-}
-
-.btn-compass {
-    background: var(--success);
-    color: white;
-    margin-top: 8px;
-}
-
-.btn-compass:hover {
-    background: #17732f;
-}
-
-.or-text {
-    text-align: center;
-    color: var(--text-secondary);
-    margin: clamp(10px, 2vw, 16px) 0;
-    font-size: clamp(0.75rem, 2vw, 0.85rem);
-}
-
-.manual-form {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(8px, 2vw, 12px);
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.input-group label {
-    font-size: clamp(0.75rem, 2vw, 0.85rem);
-    color: var(--text-secondary);
-}
-
-.input-group input {
-    padding: clamp(8px, 2vw, 12px);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: clamp(0.85rem, 2.5vw, 1rem);
-    direction: ltr;
-    text-align: left;
-}
-
-.input-group input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+.btn-primary:disabled {
+    background: #94baf7;
+    cursor: not-allowed;
 }
 
 .error-message {
     color: var(--error);
     font-size: clamp(0.75rem, 2vw, 0.85rem);
-    margin-top: 8px;
+    margin-top: 10px;
     display: none;
+    text-align: center;
 }
 
 .error-message.visible {
@@ -253,10 +195,11 @@ body {
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: clamp(12px, 3vw, 20px);
 }
 
 .map {
-    height: clamp(220px, 50vw, 350px);
+    height: clamp(220px, 50vw, 320px);
     width: 100%;
 }
 
@@ -266,7 +209,7 @@ body {
     padding: clamp(16px, 4vw, 24px);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     text-align: center;
-    margin-bottom: clamp(12px, 3vw, 24px);
+    margin-bottom: clamp(12px, 3vw, 20px);
 }
 
 .qr-title {
@@ -283,17 +226,9 @@ body {
     border: 1px solid var(--border);
 }
 
-.qr-code img, .qr-code canvas {
+.qr-code img,
+.qr-code canvas {
     display: block;
-}
-
-.qr-link {
-    margin-top: 10px;
-    font-size: clamp(0.65rem, 2vw, 0.75rem);
-    color: var(--text-secondary);
-    word-break: break-all;
-    direction: ltr;
-    font-family: monospace;
 }
 
 @media (max-width: 360px) {

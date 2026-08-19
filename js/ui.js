@@ -1,15 +1,15 @@
-const bearingValue = document.getElementById('bearingValue');
-const bearingDirection = document.getElementById('bearingDirection');
-const errorMessage = document.getElementById('errorMessage');
-const getLocationBtn = document.getElementById('getLocationBtn');
-const manualForm = document.getElementById('manualForm');
-const compassBtn = document.getElementById('compassBtn');
-const compassStatus = document.getElementById('compassStatus');
-const qiblaArrowCenter = document.getElementById('qiblaArrowCenter');
+var bearingValue = document.getElementById('bearingValue');
+var bearingDirection = document.getElementById('bearingDirection');
+var errorMessage = document.getElementById('errorMessage');
+var startBtn = document.getElementById('startBtn');
+var compassBtn = document.getElementById('compassBtn');
+var compassStatus = document.getElementById('compassStatus');
+var compassRing = document.getElementById('compassRing');
+var qiblaArrowCenter = document.getElementById('qiblaArrowCenter');
 
-let qiblaBearing = null;
-let compassActive = false;
-let deviceHeading = 0;
+var qiblaBearing = null;
+var compassActive = false;
+var deviceHeading = 0;
 
 function showError(msg) {
     errorMessage.textContent = msg;
@@ -21,62 +21,58 @@ function hideError() {
 }
 
 function getCardinalDirection(bearing) {
-    const directions = [
-        { min: 0, max: 22.5, label: 'شمالاً' },
-        { min: 22.5, max: 67.5, label: 'شمالاً شرقاً' },
-        { min: 67.5, max: 112.5, label: 'شرقاً' },
-        { min: 112.5, max: 157.5, label: 'جنوباً شرقاً' },
-        { min: 157.5, max: 202.5, label: 'جنوباً' },
-        { min: 202.5, max: 247.5, label: 'جنوباً غرباً' },
-        { min: 247.5, max: 292.5, label: 'غرباً' },
-        { min: 292.5, max: 337.5, label: 'شمالاً غرباً' },
-        { min: 337.5, max: 360, label: 'شمالاً' }
+    var d = [
+        [0, 22.5, 'شمالاً'],
+        [22.5, 67.5, 'شمالاً شرقاً'],
+        [67.5, 112.5, 'شرقاً'],
+        [112.5, 157.5, 'جنوباً شرقاً'],
+        [157.5, 202.5, 'جنوباً'],
+        [202.5, 247.5, 'جنوباً غرباً'],
+        [247.5, 292.5, 'غرباً'],
+        [292.5, 337.5, 'شمالاً غرباً'],
+        [337.5, 360, 'شمالاً']
     ];
-    const dir = directions.find(d => bearing >= d.min && bearing < d.max);
-    return dir ? dir.label : '';
+    for (var i = 0; i < d.length; i++) {
+        if (bearing >= d[i][0] && bearing < d[i][1]) return d[i][2];
+    }
+    return '';
 }
 
-function updateArrowDirection() {
+function updateArrow() {
     if (!compassActive || qiblaBearing === null) return;
 
-    const arrowAngle = (qiblaBearing - deviceHeading + 360) % 360;
-    qiblaArrowCenter.style.transform = `rotate(${arrowAngle}deg)`;
+    var angle = (qiblaBearing - deviceHeading + 360) % 360;
+    qiblaArrowCenter.style.transform = 'rotate(' + angle + 'deg)';
 
-    const isAligned = arrowAngle < 5 || arrowAngle > 355;
-
-    if (isAligned) {
-        compassStatus.innerHTML = '<span class="pulse"></span><span style="font-weight:700;">✓ أنت في اتجاه القبلة!</span>';
-    } else if (arrowAngle > 355 || arrowAngle < 5) {
-        compassStatus.innerHTML = '<span class="pulse"></span><span>almost there</span>';
+    if (angle < 8 || angle > 352) {
+        compassStatus.innerHTML = '<span class="pulse" style="background:#1e8e3e;"></span><span style="font-weight:700;color:#1e8e3e;">أنت في اتجاه القبلة!</span>';
     } else {
-        compassStatus.innerHTML = '<span class="pulse"></span><span>حرّك الهاتف — السهم يُشير للقبلة</span>';
+        compassStatus.innerHTML = '<span class="pulse"></span><span>حرّك الهاتف حتى يشير السهم للأعلى</span>';
     }
 }
 
-function handleOrientation(event) {
-    let heading = 0;
-
-    if (event.webkitCompassHeading !== undefined) {
-        heading = event.webkitCompassHeading;
-    } else if (event.alpha !== null) {
-        heading = (360 - event.alpha) % 360;
+function handleOrientation(e) {
+    var heading = 0;
+    if (e.webkitCompassHeading !== undefined) {
+        heading = e.webkitCompassHeading;
+    } else if (e.alpha !== null) {
+        heading = (360 - e.alpha) % 360;
     }
-
     deviceHeading = heading;
-    requestAnimationFrame(updateArrowDirection);
+    requestAnimationFrame(updateArrow);
 }
 
 async function activateCompass() {
     if (typeof DeviceOrientationEvent !== 'undefined' &&
         typeof DeviceOrientationEvent.requestPermission === 'function') {
         try {
-            const permission = await DeviceOrientationEvent.requestPermission();
-            if (permission === 'granted') {
+            var p = await DeviceOrientationEvent.requestPermission();
+            if (p === 'granted') {
                 startCompass();
             } else {
                 showError('تم رفض إذن البوصلة.');
             }
-        } catch (e) {
+        } catch (err) {
             showError('خطأ في طلب إذن البوصلة.');
         }
     } else if ('DeviceOrientationEvent' in window) {
@@ -89,100 +85,62 @@ async function activateCompass() {
 function startCompass() {
     window.addEventListener('deviceorientation', handleOrientation, true);
     compassActive = true;
-    compassBtn.style.display = 'none';
     compassStatus.classList.add('active');
+    if (qiblaBearing !== null) updateArrow();
 }
 
 function displayResult(lat, lng) {
     hideError();
 
-    if (!validateCoordinates(lat, lng)) {
-        showError('إحداثيات غير صالحة. تحقق من القيم المدخلة.');
-        return;
-    }
-
     qiblaBearing = calculateQiblaBearing(lat, lng);
-
     bearingValue.textContent = qiblaBearing.toFixed(1);
-    bearingDirection.textContent = `اتجاه القبلة: ${getCardinalDirection(qiblaBearing)} (${qiblaBearing.toFixed(1)}°)`;
+    bearingDirection.textContent = 'اتجاه القبلة: ' + getCardinalDirection(qiblaBearing) + ' (' + qiblaBearing.toFixed(1) + '°)';
 
     if ('DeviceOrientationEvent' in window) {
-        compassBtn.style.display = 'block';
-    }
-
-    if (compassActive) {
-        updateArrowDirection();
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            compassStatus.innerHTML = '<span class="pulse"></span><span>اضغط لتفعيل البوصلة</span>';
+            compassStatus.classList.add('active');
+            compassStatus.style.cursor = 'pointer';
+            compassStatus.onclick = activateCompass;
+        } else {
+            startCompass();
+        }
     }
 
     initMap(lat, lng);
 }
 
-getLocationBtn.addEventListener('click', function () {
+startBtn.addEventListener('click', function () {
+    hideError();
+
     if (!navigator.geolocation) {
         showError('متصفحك لا يدعم تحديد الموقع.');
         return;
     }
 
-    getLocationBtn.textContent = 'جاري التحديد...';
-    getLocationBtn.disabled = true;
+    startBtn.textContent = 'جاري تحديد الموقع...';
+    startBtn.disabled = true;
 
     navigator.geolocation.getCurrentPosition(
-        function (position) {
-            getLocationBtn.textContent = 'تحديد موقعي تلقائياً';
-            getLocationBtn.disabled = false;
-            displayResult(position.coords.latitude, position.coords.longitude);
+        function (pos) {
+            startBtn.textContent = 'تحديد اتجاه القبلة';
+            startBtn.disabled = false;
+            displayResult(pos.coords.latitude, pos.coords.longitude);
         },
-        function (error) {
-            getLocationBtn.textContent = 'تحديد موقعي تلقائياً';
-            getLocationBtn.disabled = false;
+        function (err) {
+            startBtn.textContent = 'تحديد اتجاه القبلة';
+            startBtn.disabled = false;
 
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    showError('تم رفض إذن الموقع. أدخل إحداثياتك يدوياً.');
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    showError('معلومات الموقع غير متاحة. أدخل إحداثياتك يدوياً.');
-                    break;
-                case error.TIMEOUT:
-                    showError('انتهت مهلة طلب الموقع. حاول مجدداً.');
-                    break;
-                default:
-                    showError('حدث خطأ في تحديد الموقع.');
-                    break;
+            if (err.code === 1) {
+                showError('تم رفض إذن الموقع. يرجى السماح من إعدادات المتصفح.');
+            } else if (err.code === 2) {
+                showError('معلومات الموقع غير متاحة.');
+            } else if (err.code === 3) {
+                showError('انتهت المهلة. حاول مجدداً.');
+            } else {
+                showError('حدث خطأ في تحديد الموقع.');
             }
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
 });
-
-compassBtn.addEventListener('click', activateCompass);
-
-manualForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const lat = parseFloat(document.getElementById('latInput').value);
-    const lng = parseFloat(document.getElementById('lngInput').value);
-
-    displayResult(lat, lng);
-});
-
-(function generateQR() {
-    const url = window.location.href;
-    const qrContainer = document.getElementById('qrcode');
-    const qrLink = document.getElementById('qrLink');
-
-    if (qrContainer && typeof QRCode !== 'undefined') {
-        new QRCode(qrContainer, {
-            text: url,
-            width: 160,
-            height: 160,
-            colorDark: '#202124',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.M
-        });
-    }
-
-    if (qrLink) {
-        qrLink.textContent = url;
-    }
-})();
