@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اتجاه القبلة</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <h1>اتجاه القبلة</h1>
+            <p class="subtitle">حدد اتجاه الكعبة المشرفة من موقعك</p>
+        </header>
+
+        <section class="qibla-display" id="qiblaDisplay">
+            <div class="arrow-container">
+                <svg id="qiblaArrow" class="qibla-arrow" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="2"/>
+                    <text x="50" y="12" text-anchor="middle" class="compass-label">شمال</text>
+                    <text x="50" y="95" text-anchor="middle" class="compass-label">جنوب</text>
+                    <text x="8" y="53" text-anchor="middle" class="compass-label">غرب</text>
+                    <text x="92" y="53" text-anchor="middle" class="compass-label">شرق</text>
+                    <polygon points="50,15 44,35 56,35" fill="#1a73e8" class="arrow-head"/>
+                    <line x1="50" y1="35" x2="50" y2="50" stroke="#1a73e8" stroke-width="3"/>
+                </svg>
+            </div>
+            <div class="bearing-info">
+                <span class="bearing-value" id="bearingValue">--</span>
+                <span class="bearing-unit">°</span>
+            </div>
+            <p class="bearing-direction" id="bearingDirection">في انتظار تحديد الموقع...</p>
+        </section>
+
+        <section class="location-section">
+            <button id="getLocationBtn" class="btn btn-primary">تحديد موقعي تلقائياً</button>
+            <p class="or-text">أو</p>
+            <form id="manualForm" class="manual-form">
+                <div class="input-group">
+                    <label for="latInput">خط العرض</label>
+                    <input type="number" id="latInput" step="any" placeholder="مثال: 24.7136" required>
+                </div>
+                <div class="input-group">
+                    <label for="lngInput">خط الطول</label>
+                    <input type="number" id="lngInput" step="any" placeholder="مثال: 46.6753" required>
+                </div>
+                <button type="submit" class="btn btn-secondary">حساب الاتجاه</button>
+            </form>
+            <p class="error-message" id="errorMessage"></p>
+        </section>
+
+        <section class="map-section" id="mapSection" style="display:none;">
+            <div id="map" class="map"></div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/qibla.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
