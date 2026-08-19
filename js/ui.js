@@ -146,24 +146,28 @@ function startCompass() {
 }
 
 function displayResult(lat, lng) {
-    hideError();
+    try {
+        hideError();
 
-    qiblaBearing = calculateQiblaBearing(lat, lng);
-    bearingValue.textContent = qiblaBearing.toFixed(1);
-    bearingDirection.textContent = 'اتجاه القبلة: ' + getCardinalDirection(qiblaBearing) + ' (' + qiblaBearing.toFixed(1) + '°)';
+        qiblaBearing = calculateQiblaBearing(lat, lng);
+        bearingValue.textContent = qiblaBearing.toFixed(1);
+        bearingDirection.textContent = 'اتجاه القبلة: ' + getCardinalDirection(qiblaBearing) + ' (' + qiblaBearing.toFixed(1) + '°)';
 
-    if ('DeviceOrientationEvent' in window) {
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-            compassStatus.className = 'compass-status active';
-            compassStatusText.textContent = 'اضغط هنا لتفعيل البوصلة';
-            compassStatus.style.cursor = 'pointer';
-            compassStatus.onclick = activateCompass;
-        } else {
-            startCompass();
+        if ('DeviceOrientationEvent' in window) {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                compassStatus.className = 'compass-status active';
+                compassStatusText.textContent = 'اضغط هنا لتفعيل البوصلة';
+                compassStatus.style.cursor = 'pointer';
+                compassStatus.onclick = activateCompass;
+            } else {
+                startCompass();
+            }
         }
-    }
 
-    initMap(lat, lng);
+        initMap(lat, lng);
+    } catch (err) {
+        showError('خطأ تقني: ' + (err && err.message ? err.message : err));
+    }
 }
 
 function showFlipButton() {
