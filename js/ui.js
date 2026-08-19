@@ -9,8 +9,12 @@ var qiblaArrow = document.getElementById('qiblaArrow');
 var qiblaBearing = null;
 var compassActive = false;
 var deviceHeading = 0;
+var filteredHeading = null;
 var calibrationOffset = 0;
 var hasVibrated = false;
+var lastRenderTime = 0;
+var FILTER_ALPHA = 0.2;
+var MIN_UPDATE_MS = 50;
 
 function showError(msg) {
     errorMessage.textContent = msg;
@@ -87,8 +91,27 @@ function computeHeading(e) {
     return (heading + 360) % 360;
 }
 
+function angularDiff(a, b) {
+    var diff = (a - b + 360) % 360;
+    return diff > 180 ? diff - 360 : diff;
+}
+
 function handleOrientation(e) {
-    deviceHeading = computeHeading(e);
+    var raw = computeHeading(e);
+
+    if (filteredHeading === null) {
+        filteredHeading = raw;
+    } else {
+        var diff = angularDiff(raw, filteredHeading);
+        filteredHeading = (filteredHeading + diff * FILTER_ALPHA + 360) % 360;
+    }
+
+    deviceHeading = filteredHeading;
+
+    var now = Date.now();
+    if (now - lastRenderTime < MIN_UPDATE_MS) return;
+    lastRenderTime = now;
+
     requestAnimationFrame(updateArrow);
 }
 
