@@ -54,14 +54,33 @@ function updateArrow() {
     }
 }
 
-function handleOrientation(e) {
-    var heading = 0;
-    if (e.webkitCompassHeading !== undefined) {
-        heading = e.webkitCompassHeading;
-    } else if (e.alpha !== null) {
-        heading = (360 - e.alpha) % 360;
+function getScreenAngle() {
+    if (screen.orientation && typeof screen.orientation.angle === 'number') {
+        return screen.orientation.angle;
     }
-    deviceHeading = heading;
+    return (typeof window.orientation === 'number') ? window.orientation : 0;
+}
+
+function computeHeading(e) {
+    if (e.webkitCompassHeading !== undefined) {
+        return e.webkitCompassHeading;
+    }
+    var alpha = e.alpha;
+    if (alpha === null || alpha === undefined) return deviceHeading;
+
+    var screenAngle = getScreenAngle();
+    var heading;
+    switch (screenAngle) {
+        case 90:  heading = (alpha + 90) % 360; break;
+        case 180: heading = (alpha + 180) % 360; break;
+        case 270: heading = (alpha + 270) % 360; break;
+        default:  heading = (360 - alpha) % 360; break;
+    }
+    return (heading + 360) % 360;
+}
+
+function handleOrientation(e) {
+    deviceHeading = computeHeading(e);
     requestAnimationFrame(updateArrow);
 }
 
@@ -86,7 +105,8 @@ async function activateCompass() {
 }
 
 function startCompass() {
-    window.addEventListener('deviceorientation', handleOrientation, true);
+    var evt = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
+    window.addEventListener(evt, handleOrientation, true);
     compassActive = true;
     compassStatus.className = 'compass-status active';
     compassStatusText.textContent = 'حرّك الهاتف حتى يشير السهم للأعلى';
