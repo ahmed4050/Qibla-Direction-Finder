@@ -2,10 +2,9 @@ var bearingValue = document.getElementById('bearingValue');
 var bearingDirection = document.getElementById('bearingDirection');
 var errorMessage = document.getElementById('errorMessage');
 var startBtn = document.getElementById('startBtn');
-var compassBtn = document.getElementById('compassBtn');
 var compassStatus = document.getElementById('compassStatus');
-var compassRing = document.getElementById('compassRing');
-var qiblaArrowCenter = document.getElementById('qiblaArrowCenter');
+var compassStatusText = document.getElementById('compassStatusText');
+var qiblaArrow = document.getElementById('qiblaArrow');
 
 var qiblaBearing = null;
 var compassActive = false;
@@ -42,12 +41,16 @@ function updateArrow() {
     if (!compassActive || qiblaBearing === null) return;
 
     var angle = (qiblaBearing - deviceHeading + 360) % 360;
-    qiblaArrowCenter.style.transform = 'rotate(' + angle + 'deg)';
+    qiblaArrow.style.transform = 'translate(-50%, -50%) rotate(' + angle + 'deg)';
 
-    if (angle < 8 || angle > 352) {
-        compassStatus.innerHTML = '<span class="pulse" style="background:#1e8e3e;"></span><span style="font-weight:700;color:#1e8e3e;">أنت في اتجاه القبلة!</span>';
+    var isAligned = angle < 10 || angle > 350;
+
+    if (isAligned) {
+        compassStatus.className = 'compass-status active aligned';
+        compassStatusText.textContent = 'أنت في اتجاه القبلة!';
     } else {
-        compassStatus.innerHTML = '<span class="pulse"></span><span>حرّك الهاتف حتى يشير السهم للأعلى</span>';
+        compassStatus.className = 'compass-status active';
+        compassStatusText.textContent = 'حرّك الهاتف حتى يشير السهم للأعلى';
     }
 }
 
@@ -85,7 +88,8 @@ async function activateCompass() {
 function startCompass() {
     window.addEventListener('deviceorientation', handleOrientation, true);
     compassActive = true;
-    compassStatus.classList.add('active');
+    compassStatus.className = 'compass-status active';
+    compassStatusText.textContent = 'حرّك الهاتف حتى يشير السهم للأعلى';
     if (qiblaBearing !== null) updateArrow();
 }
 
@@ -98,8 +102,8 @@ function displayResult(lat, lng) {
 
     if ('DeviceOrientationEvent' in window) {
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-            compassStatus.innerHTML = '<span class="pulse"></span><span>اضغط لتفعيل البوصلة</span>';
-            compassStatus.classList.add('active');
+            compassStatus.className = 'compass-status active';
+            compassStatusText.textContent = 'اضغط هنا لتفعيل البوصلة';
             compassStatus.style.cursor = 'pointer';
             compassStatus.onclick = activateCompass;
         } else {

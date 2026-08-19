@@ -1,4 +1,4 @@
-let map = null;
+var map = null;
 
 function initMap(userLat, userLng) {
     if (map) {
@@ -9,28 +9,31 @@ function initMap(userLat, userLng) {
     document.getElementById('mapSection').style.display = 'block';
 
     setTimeout(function () {
-        map = L.map('map', { zoomControl: true });
+        map = L.map('map', {
+            zoomControl: false,
+            attributionControl: false
+        });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap'
+            maxZoom: 18
         }).addTo(map);
 
         var userIcon = L.divIcon({
             className: '',
-            html: '<div style="width:14px;height:14px;background:#1a73e8;border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.4);"></div>',
-            iconSize: [14, 14],
-            iconAnchor: [7, 7]
+            html: '<div style="width:16px;height:16px;background:#1a73e8;border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
         });
 
         var kaabaIcon = L.divIcon({
             className: '',
-            html: '<div style="width:28px;height:28px;background:#fbbc04;border:3px solid white;border-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">🕋</div>',
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
+            html: '<div style="width:32px;height:32px;background:#fbbf24;border:3px solid white;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;">🕋</div>',
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
         });
 
         L.marker([userLat, userLng], { icon: userIcon }).addTo(map)
-            .bindPopup('موقعك');
+            .bindPopup('موقعك الحالي');
 
         L.marker([KAABA_LAT, KAABA_LNG], { icon: kaabaIcon }).addTo(map)
             .bindPopup('الكعبة المشرفة');
@@ -40,9 +43,9 @@ function initMap(userLat, userLng) {
             [KAABA_LAT, KAABA_LNG]
         ], {
             color: '#1a73e8',
-            weight: 2,
-            dashArray: '8, 6',
-            opacity: 0.6
+            weight: 2.5,
+            dashArray: '10, 8',
+            opacity: 0.5
         }).addTo(map);
 
         var bounds = L.latLngBounds(
@@ -50,8 +53,13 @@ function initMap(userLat, userLng) {
             [KAABA_LAT, KAABA_LNG]
         );
 
-        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 6 });
+        map.fitBounds(bounds, {
+            padding: [50, 50],
+            maxZoom: 6
+        });
 
-        setTimeout(function () { map.invalidateSize(); }, 200);
-    }, 150);
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 300);
+    }, 200);
 }
