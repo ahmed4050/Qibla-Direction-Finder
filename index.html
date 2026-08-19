@@ -18,23 +18,36 @@
 
         <section class="qibla-display" id="qiblaDisplay">
             <div class="compass-wrapper">
-                <div class="compass-ring" id="compassRing">
+                <div class="compass-ring">
                     <svg viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="46" fill="none" stroke="#e0e0e0" stroke-width="1.5"/>
                         <circle cx="50" cy="50" r="40" fill="none" stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="2,4"/>
-                        <line x1="50" y1="6" x2="50" y2="12" stroke="#d93025" stroke-width="1.5"/>
-                        <line x1="50" y1="88" x2="50" y2="94" stroke="#999" stroke-width="1"/>
-                        <line x1="6" y1="50" x2="12" y2="50" stroke="#999" stroke-width="1"/>
-                        <line x1="88" y1="50" x2="94" y2="50" stroke="#999" stroke-width="1"/>
-                        <text x="50" y="10" text-anchor="middle" class="compass-label" fill="#d93025" font-size="6">شمال</text>
-                        <text x="50" y="97" text-anchor="middle" class="compass-label">جنوب</text>
-                        <text x="4" y="53" text-anchor="middle" class="compass-label">غرب</text>
-                        <text x="96" y="53" text-anchor="middle" class="compass-label">شرق</text>
+                        <line x1="50" y1="5" x2="50" y2="11" stroke="#d93025" stroke-width="2"/>
+                        <line x1="50" y1="89" x2="50" y2="95" stroke="#999" stroke-width="1"/>
+                        <line x1="5" y1="50" x2="11" y2="50" stroke="#999" stroke-width="1"/>
+                        <line x1="89" y1="50" x2="95" y2="50" stroke="#999" stroke-width="1"/>
+                        <line x1="17.3" y1="17.3" x2="21.5" y2="21.5" stroke="#ccc" stroke-width="0.5"/>
+                        <line x1="82.7" y1="17.3" x2="78.5" y2="21.5" stroke="#ccc" stroke-width="0.5"/>
+                        <line x1="17.3" y1="82.7" x2="21.5" y2="78.5" stroke="#ccc" stroke-width="0.5"/>
+                        <line x1="82.7" y1="82.7" x2="78.5" y2="78.5" stroke="#ccc" stroke-width="0.5"/>
+                        <text x="50" y="10" text-anchor="middle" fill="#d93025" font-size="6" font-weight="700">شمال</text>
+                        <text x="50" y="98" text-anchor="middle" fill="#999" font-size="5.5">جنوب</text>
+                        <text x="3" y="53" text-anchor="middle" fill="#999" font-size="5.5">غرب</text>
+                        <text x="97" y="53" text-anchor="middle" fill="#999" font-size="5.5">شرق</text>
                     </svg>
                 </div>
-                <div class="qibla-indicator" id="qiblaIndicator" style="display:none;">
-                    <div class="qibla-dot"></div>
-                    <span class="qibla-label-tag">القبلة</span>
+
+                <div class="qibla-arrow-center" id="qiblaArrowCenter">
+                    <svg width="60" height="80" viewBox="0 0 60 80">
+                        <defs>
+                            <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a73e8"/>
+                                <stop offset="100%" style="stop-color:#0d47a1"/>
+                            </linearGradient>
+                        </defs>
+                        <polygon points="30,0 10,35 22,35 22,80 38,80 38,35 50,35" fill="url(#arrowGrad)"/>
+                        <polygon points="30,0 10,35 22,35 22,80 38,80 38,35 50,35" fill="none" stroke="#0d47a1" stroke-width="1"/>
+                    </svg>
                 </div>
             </div>
 
@@ -45,7 +58,7 @@
             <p class="bearing-direction" id="bearingDirection">في انتظار تحديد الموقع...</p>
             <div class="compass-status" id="compassStatus">
                 <span class="pulse"></span>
-                <span>البوصلة نشطة - حرّك الهاتف للبحث عن القبلة</span>
+                <span>حرّك الهاتف — السهم يُشير للقبلة</span>
             </div>
         </section>
 

@@ -1,13 +1,11 @@
-const arrow = document.getElementById('qiblaArrow');
 const bearingValue = document.getElementById('bearingValue');
 const bearingDirection = document.getElementById('bearingDirection');
 const errorMessage = document.getElementById('errorMessage');
 const getLocationBtn = document.getElementById('getLocationBtn');
 const manualForm = document.getElementById('manualForm');
 const compassBtn = document.getElementById('compassBtn');
-const compassRing = document.getElementById('compassRing');
 const compassStatus = document.getElementById('compassStatus');
-const qiblaIndicator = document.getElementById('qiblaIndicator');
+const qiblaArrowCenter = document.getElementById('qiblaArrowCenter');
 
 let qiblaBearing = null;
 let compassActive = false;
@@ -38,30 +36,20 @@ function getCardinalDirection(bearing) {
     return dir ? dir.label : '';
 }
 
-function updateCompassRotation() {
+function updateArrowDirection() {
     if (!compassActive || qiblaBearing === null) return;
 
-    const adjustedBearing = (qiblaBearing - deviceHeading + 360) % 360;
-    compassRing.style.transform = `rotate(${-deviceHeading}deg)`;
+    const arrowAngle = (qiblaBearing - deviceHeading + 360) % 360;
+    qiblaArrowCenter.style.transform = `rotate(${arrowAngle}deg)`;
 
-    const indicatorAngle = adjustedBearing;
-    const radian = (indicatorAngle - 90) * (Math.PI / 180);
-    const radius = 42;
-    const x = 50 + radius * Math.cos(radian);
-    const y = 50 + radius * Math.sin(radian);
-
-    qiblaIndicator.style.display = 'flex';
-    qiblaIndicator.style.left = `${x}%`;
-    qiblaIndicator.style.top = `${y}%`;
-    qiblaIndicator.style.transform = `translate(-50%, -50%) rotate(${deviceHeading}deg)`;
-
-    const diff = Math.abs(adjustedBearing);
-    const isAligned = diff < 5 || diff > 355;
+    const isAligned = arrowAngle < 5 || arrowAngle > 355;
 
     if (isAligned) {
-        compassStatus.innerHTML = '<span class="pulse"></span><span style="color: var(--success); font-weight:700;">✓ أنت في اتجاه القبلة!</span>';
+        compassStatus.innerHTML = '<span class="pulse"></span><span style="font-weight:700;">✓ أنت في اتجاه القبلة!</span>';
+    } else if (arrowAngle > 355 || arrowAngle < 5) {
+        compassStatus.innerHTML = '<span class="pulse"></span><span>almost there</span>';
     } else {
-        compassStatus.innerHTML = '<span class="pulse"></span><span>حرّك الهاتف باتجاه القبلة</span>';
+        compassStatus.innerHTML = '<span class="pulse"></span><span>حرّك الهاتف — السهم يُشير للقبلة</span>';
     }
 }
 
@@ -75,7 +63,7 @@ function handleOrientation(event) {
     }
 
     deviceHeading = heading;
-    requestAnimationFrame(updateCompassRotation);
+    requestAnimationFrame(updateArrowDirection);
 }
 
 async function activateCompass() {
@@ -123,7 +111,7 @@ function displayResult(lat, lng) {
     }
 
     if (compassActive) {
-        updateCompassRotation();
+        updateArrowDirection();
     }
 
     initMap(lat, lng);

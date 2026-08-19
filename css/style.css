@@ -65,15 +65,14 @@ body {
 
 .compass-wrapper {
     position: relative;
-    width: clamp(200px, 60vw, 280px);
-    height: clamp(200px, 60vw, 280px);
+    width: clamp(220px, 65vw, 300px);
+    height: clamp(220px, 65vw, 300px);
     margin: 0 auto clamp(12px, 3vw, 20px);
 }
 
 .compass-ring {
     position: absolute;
     inset: 0;
-    transition: transform 0.15s ease-out;
 }
 
 .compass-ring svg {
@@ -87,41 +86,20 @@ body {
     font-weight: 600;
 }
 
-.qibla-indicator {
-    position: absolute;
-    top: 8%;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    pointer-events: none;
-}
-
-.qibla-dot {
-    width: clamp(10px, 3vw, 14px);
-    height: clamp(10px, 3vw, 14px);
-    background: var(--primary);
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
-
-.qibla-label-tag {
-    font-size: clamp(0.55rem, 2vw, 0.7rem);
-    color: var(--primary);
-    font-weight: 700;
-    margin-top: 2px;
-    white-space: nowrap;
-}
-
-.compass-needle {
+.qibla-arrow-center {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform-origin: center center;
     width: 0;
     height: 0;
+    transform-origin: center center;
+    transition: transform 0.2s ease-out;
+}
+
+.qibla-arrow-center svg {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
 }
 
 .bearing-info {
@@ -284,8 +262,8 @@ body {
 
 @media (max-width: 360px) {
     .compass-wrapper {
-        width: 180px;
-        height: 180px;
+        width: 190px;
+        height: 190px;
     }
 }
 
