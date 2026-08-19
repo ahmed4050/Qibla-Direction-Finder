@@ -58,6 +58,13 @@ function initMap(userLat, userLng) {
             maxZoom: 6
         });
 
+        var dist = calculateDistanceKm(userLat, userLng, KAABA_LAT, KAABA_LNG);
+        var distEl = document.getElementById('distanceInfo');
+        if (distEl) {
+            distEl.textContent = 'المسافة بينك وبين الكعبة المشرفة: ' +
+                dist.toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + ' كم';
+        }
+
         setTimeout(function () {
             map.invalidateSize();
         }, 300);
