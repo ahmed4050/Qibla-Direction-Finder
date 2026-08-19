@@ -71,5 +71,21 @@
     <script src="js/qibla.js"></script>
     <script src="js/map.js"></script>
     <script src="js/ui.js"></script>
+    <script>
+        (function () {
+            var url = window.location.href;
+            var container = document.getElementById('qrcode');
+            if (container && typeof QRCode !== 'undefined') {
+                new QRCode(container, {
+                    text: url,
+                    width: 150,
+                    height: 150,
+                    colorDark: '#202124',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+        })();
+    </script>
 </body>
 </html>

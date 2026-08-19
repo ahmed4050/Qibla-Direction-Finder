@@ -175,6 +175,8 @@ function showFlipButton() {
     }
 }
 
+var locationTimeout = null;
+
 startBtn.addEventListener('click', function () {
     hideError();
 
@@ -186,29 +188,38 @@ startBtn.addEventListener('click', function () {
     startBtn.textContent = 'جاري تحديد الموقع...';
     startBtn.disabled = true;
 
+    if (locationTimeout) clearTimeout(locationTimeout);
+    locationTimeout = setTimeout(function () {
+        startBtn.textContent = 'تحديد اتجاه القبلة';
+        startBtn.disabled = false;
+        showError('تعذر تحديد الموقع. تأكد من تفعيل خدمة الموقع (GPS) على هاتفك ثم جرّب مجدداً.');
+    }, 20000);
+
     navigator.geolocation.getCurrentPosition(
         function (pos) {
+            if (locationTimeout) clearTimeout(locationTimeout);
             startBtn.textContent = 'تحديد اتجاه القبلة';
             startBtn.disabled = false;
             displayResult(pos.coords.latitude, pos.coords.longitude);
         },
         function (err) {
+            if (locationTimeout) clearTimeout(locationTimeout);
             startBtn.textContent = 'تحديد اتجاه القبلة';
             startBtn.disabled = false;
 
             if (err.code === 1) {
                 showError('تم رفض إذن الموقع. يرجى السماح من إعدادات المتصفح.');
             } else if (err.code === 2) {
-                showError('معلومات الموقع غير متاحة.');
+                showError('معلومات الموقع غير متاحة. تأكد من تفعيل GPS.');
             } else if (err.code === 3) {
                 showError('انتهت المهلة. حاول مجدداً.');
             } else {
                 showError('حدث خطأ في تحديد الموقع.');
             }
-},
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-        );
-    });
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+});
 }
 
 function flipCalibration() {
