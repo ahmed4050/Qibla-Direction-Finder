@@ -17,101 +17,180 @@
     box-sizing: border-box;
 }
 
+html {
+    font-size: clamp(14px, 2.5vw + 10px, 18px);
+}
+
 body {
     font-family: -apple-system, 'Segoe UI', Roboto, 'Noto Sans Arabic', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    min-height: 100dvh;
     direction: rtl;
+    overflow-x: hidden;
 }
 
 .container {
-    max-width: 480px;
+    width: 100%;
+    max-width: 520px;
     margin: 0 auto;
-    padding: 24px 16px;
+    padding: clamp(12px, 3vw, 24px);
 }
 
 .header {
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: clamp(16px, 4vw, 32px);
 }
 
 .header h1 {
-    font-size: 1.75rem;
+    font-size: clamp(1.3rem, 5vw, 1.75rem);
     font-weight: 700;
     margin-bottom: 4px;
 }
 
 .subtitle {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
 }
 
 .qibla-display {
     background: var(--card-bg);
     border-radius: var(--radius);
-    padding: 32px;
+    padding: clamp(16px, 4vw, 32px);
     text-align: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    margin-bottom: 24px;
+    margin-bottom: clamp(12px, 3vw, 24px);
 }
 
-.arrow-container {
-    width: 180px;
-    height: 180px;
-    margin: 0 auto 16px;
+.compass-wrapper {
+    position: relative;
+    width: clamp(200px, 60vw, 280px);
+    height: clamp(200px, 60vw, 280px);
+    margin: 0 auto clamp(12px, 3vw, 20px);
 }
 
-.qibla-arrow {
+.compass-ring {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.15s ease-out;
+}
+
+.compass-ring svg {
     width: 100%;
     height: 100%;
-    transition: transform 0.5s ease;
 }
 
 .compass-label {
-    font-size: 8px;
+    font-size: 7px;
     fill: var(--text-secondary);
+    font-weight: 600;
 }
 
-.arrow-head {
-    transform-origin: 50px 50px;
+.qibla-indicator {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.qibla-dot {
+    width: clamp(10px, 3vw, 14px);
+    height: clamp(10px, 3vw, 14px);
+    background: var(--primary);
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.qibla-label-tag {
+    font-size: clamp(0.55rem, 2vw, 0.7rem);
+    color: var(--primary);
+    font-weight: 700;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+.compass-needle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: center center;
+    width: 0;
+    height: 0;
 }
 
 .bearing-info {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
     font-weight: 700;
     color: var(--primary);
 }
 
 .bearing-unit {
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 3vw, 1.5rem);
     color: var(--text-secondary);
 }
 
 .bearing-direction {
     color: var(--text-secondary);
-    margin-top: 8px;
-    font-size: 0.95rem;
+    margin-top: 6px;
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+}
+
+.compass-status {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    color: var(--success);
+}
+
+.compass-status.active {
+    display: flex;
+}
+
+.compass-status .pulse {
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
 }
 
 .location-section {
     background: var(--card-bg);
     border-radius: var(--radius);
-    padding: 24px;
+    padding: clamp(16px, 4vw, 24px);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    margin-bottom: 24px;
+    margin-bottom: clamp(12px, 3vw, 24px);
 }
 
 .btn {
     display: block;
     width: 100%;
-    padding: 12px;
+    padding: clamp(10px, 2.5vw, 14px);
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+    transform: scale(0.98);
 }
 
 .btn-primary {
@@ -132,17 +211,27 @@ body {
     background: #c0c0c0;
 }
 
+.btn-compass {
+    background: var(--success);
+    color: white;
+    margin-top: 8px;
+}
+
+.btn-compass:hover {
+    background: #17732f;
+}
+
 .or-text {
     text-align: center;
     color: var(--text-secondary);
-    margin: 16px 0;
-    font-size: 0.85rem;
+    margin: clamp(10px, 2vw, 16px) 0;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
 }
 
 .manual-form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: clamp(8px, 2vw, 12px);
 }
 
 .input-group {
@@ -152,15 +241,15 @@ body {
 }
 
 .input-group label {
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
     color: var(--text-secondary);
 }
 
 .input-group input {
-    padding: 10px 12px;
+    padding: clamp(8px, 2vw, 12px);
     border: 1px solid var(--border);
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
     direction: ltr;
     text-align: left;
 }
@@ -173,7 +262,7 @@ body {
 
 .error-message {
     color: var(--error);
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
     margin-top: 8px;
     display: none;
 }
@@ -189,21 +278,25 @@ body {
 }
 
 .map {
-    height: 300px;
+    height: clamp(220px, 50vw, 350px);
     width: 100%;
 }
 
 @media (max-width: 360px) {
+    .compass-wrapper {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+@media (min-width: 768px) {
     .container {
-        padding: 16px 12px;
+        padding: 32px 24px;
     }
+}
 
-    .arrow-container {
-        width: 150px;
-        height: 150px;
-    }
-
-    .bearing-info {
-        font-size: 2rem;
+@supports (height: 100dvh) {
+    body {
+        min-height: 100dvh;
     }
 }
