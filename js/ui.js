@@ -165,3 +165,24 @@ manualForm.addEventListener('submit', function (e) {
 
     displayResult(lat, lng);
 });
+
+(function generateQR() {
+    const url = window.location.href;
+    const qrContainer = document.getElementById('qrcode');
+    const qrLink = document.getElementById('qrLink');
+
+    if (qrContainer && typeof QRCode !== 'undefined') {
+        new QRCode(qrContainer, {
+            text: url,
+            width: 160,
+            height: 160,
+            colorDark: '#202124',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    }
+
+    if (qrLink) {
+        qrLink.textContent = url;
+    }
+})();

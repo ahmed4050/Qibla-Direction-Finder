@@ -260,6 +260,42 @@ body {
     width: 100%;
 }
 
+.qr-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: clamp(16px, 4vw, 24px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: clamp(12px, 3vw, 24px);
+}
+
+.qr-title {
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.qr-code {
+    display: inline-block;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.qr-code img, .qr-code canvas {
+    display: block;
+}
+
+.qr-link {
+    margin-top: 10px;
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    color: var(--text-secondary);
+    word-break: break-all;
+    direction: ltr;
+    font-family: monospace;
+}
+
 @media (max-width: 360px) {
     .compass-wrapper {
         width: 190px;

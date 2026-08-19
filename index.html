@@ -8,6 +8,7 @@
     <title>اتجاه القبلة</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <main class="container">
@@ -82,6 +83,12 @@
 
         <section class="map-section" id="mapSection" style="display:none;">
             <div id="map" class="map"></div>
+        </section>
+
+        <section class="qr-section">
+            <p class="qr-title">امسح الرمز للفتح على هاتفك</p>
+            <div id="qrcode" class="qr-code"></div>
+            <p class="qr-link" id="qrLink"></p>
         </section>
     </main>
 
