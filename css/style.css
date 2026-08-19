@@ -230,6 +230,24 @@ body {
     cursor: not-allowed;
 }
 
+.btn-secondary {
+    background: var(--border);
+    color: var(--text);
+    box-shadow: none;
+    padding: clamp(10px, 2.5vw, 12px);
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+.btn-secondary:hover {
+    background: #d1d5db;
+}
+
+.btn-secondary.flipped {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #f59e0b;
+}
+
 .error-message {
     color: var(--error);
     font-size: clamp(0.8rem, 2vw, 0.9rem);

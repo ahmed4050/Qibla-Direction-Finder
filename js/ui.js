@@ -9,6 +9,8 @@ var qiblaArrow = document.getElementById('qiblaArrow');
 var qiblaBearing = null;
 var compassActive = false;
 var deviceHeading = 0;
+var calibrationOffset = 0;
+var hasVibrated = false;
 
 function showError(msg) {
     errorMessage.textContent = msg;
@@ -40,7 +42,8 @@ function getCardinalDirection(bearing) {
 function updateArrow() {
     if (!compassActive || qiblaBearing === null) return;
 
-    var angle = (qiblaBearing - deviceHeading + 360) % 360;
+    var effectiveBearing = (qiblaBearing + calibrationOffset + 360) % 360;
+    var angle = (effectiveBearing - deviceHeading + 360) % 360;
     qiblaArrow.style.transform = 'translate(-50%, -50%) rotate(' + angle + 'deg)';
 
     var isAligned = angle < 10 || angle > 350;
@@ -48,9 +51,14 @@ function updateArrow() {
     if (isAligned) {
         compassStatus.className = 'compass-status active aligned';
         compassStatusText.textContent = 'أنت في اتجاه القبلة!';
+        if (!hasVibrated && navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+            hasVibrated = true;
+        }
     } else {
         compassStatus.className = 'compass-status active';
         compassStatusText.textContent = 'حرّك الهاتف حتى يشير السهم للأعلى';
+        hasVibrated = false;
     }
 }
 
@@ -111,6 +119,7 @@ function startCompass() {
     compassStatus.className = 'compass-status active';
     compassStatusText.textContent = 'حرّك الهاتف حتى يشير السهم للأعلى';
     if (qiblaBearing !== null) updateArrow();
+    showFlipButton();
 }
 
 function displayResult(lat, lng) {
@@ -132,6 +141,15 @@ function displayResult(lat, lng) {
     }
 
     initMap(lat, lng);
+}
+
+function showFlipButton() {
+    var flipBtn = document.getElementById('flipBtn');
+    if (flipBtn) {
+        flipBtn.style.display = 'block';
+        flipBtn.textContent = calibrationOffset === 180 ? '↻ معايرة: مقلوبة' : '↻ معايرة';
+        flipBtn.classList.toggle('flipped', calibrationOffset === 180);
+    }
 }
 
 startBtn.addEventListener('click', function () {
@@ -164,7 +182,18 @@ startBtn.addEventListener('click', function () {
             } else {
                 showError('حدث خطأ في تحديد الموقع.');
             }
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
-});
+},
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
+    });
+}
+
+function flipCalibration() {
+    calibrationOffset = (calibrationOffset === 0) ? 180 : 0;
+    if (compassActive) updateArrow();
+    var flipBtn = document.getElementById('flipBtn');
+    if (flipBtn) {
+        flipBtn.textContent = calibrationOffset === 180 ? '↻ معايرة: مقلوبة' : '↻ معايرة';
+        flipBtn.classList.toggle('flipped', calibrationOffset === 180);
+    }
+}
