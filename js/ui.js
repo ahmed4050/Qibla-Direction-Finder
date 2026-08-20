@@ -1,22 +1,22 @@
-var bearingValue = document.getElementById('bearingValue');
-var bearingDirection = document.getElementById('bearingDirection');
-var errorMessage = document.getElementById('errorMessage');
-var startBtn = document.getElementById('startBtn');
-var compassStatus = document.getElementById('compassStatus');
-var compassStatusText = document.getElementById('compassStatusText');
-var qiblaArrow = document.getElementById('qiblaArrow');
-var compassBg = document.getElementById('compassBg');
+const bearingValue = document.getElementById('bearingValue');
+const bearingDirection = document.getElementById('bearingDirection');
+const errorMessage = document.getElementById('errorMessage');
+const startBtn = document.getElementById('startBtn');
+const compassStatus = document.getElementById('compassStatus');
+const compassStatusText = document.getElementById('compassStatusText');
+const qiblaArrow = document.getElementById('qiblaArrow');
+const compassBg = document.getElementById('compassBg');
 
-var qiblaBearing = null;
-var compassActive = false;
-var deviceHeading = 0;
-var filteredHeading = null;
-var calibrationOffset = 0;
-var hasVibrated = false;
-var lastRenderTime = 0;
-var arrowRotation = 0;
-var FILTER_ALPHA = 0.2;
-var MIN_UPDATE_MS = 50;
+let qiblaBearing = null;
+let compassActive = false;
+let deviceHeading = 0;
+let filteredHeading = null;
+let calibrationOffset = 0;
+let hasVibrated = false;
+let lastRenderTime = 0;
+let arrowRotation = 0;
+const FILTER_ALPHA = 0.2;
+const MIN_UPDATE_MS = 50;
 
 function showError(msg) {
     errorMessage.textContent = msg;
@@ -28,7 +28,7 @@ function hideError() {
 }
 
 function getCardinalDirection(bearing) {
-    var d = [
+    const d = [
         [0, 22.5, 'شمالاً'],
         [22.5, 67.5, 'شمالاً شرقاً'],
         [67.5, 112.5, 'شرقاً'],
@@ -39,7 +39,7 @@ function getCardinalDirection(bearing) {
         [292.5, 337.5, 'شمالاً غرباً'],
         [337.5, 360, 'شمالاً']
     ];
-    for (var i = 0; i < d.length; i++) {
+    for (let i = 0; i < d.length; i++) {
         if (bearing >= d[i][0] && bearing < d[i][1]) return d[i][2];
     }
     return '';
@@ -48,11 +48,11 @@ function getCardinalDirection(bearing) {
 function updateArrow() {
     if (!compassActive || qiblaBearing === null) return;
 
-    var effectiveBearing = (qiblaBearing + calibrationOffset + 360) % 360;
-    var target = (effectiveBearing - deviceHeading + 360) % 360;
+    const effectiveBearing = (qiblaBearing + calibrationOffset + 360) % 360;
+    const target = (effectiveBearing - deviceHeading + 360) % 360;
 
-    var current = ((arrowRotation % 360) + 360) % 360;
-    var diff = target - current;
+    const current = ((arrowRotation % 360) + 360) % 360;
+    let diff = target - current;
     if (diff > 180) diff -= 360;
     if (diff < -180) diff += 360;
     arrowRotation += diff;
@@ -61,7 +61,7 @@ function updateArrow() {
 
     updateCompassBg(target);
 
-    var isAligned = target < 10 || target > 350;
+    const isAligned = target < 10 || target > 350;
 
     if (isAligned) {
         compassStatus.className = 'compass-status active aligned';
@@ -80,13 +80,13 @@ function updateArrow() {
 function updateCompassBg(target) {
     if (!compassBg) return;
 
-    var distance = Math.min(target, 360 - target);
-    var intensity = 1 - (distance / 180);
+    const distance = Math.min(target, 360 - target);
+    const intensity = 1 - (distance / 180);
 
-    var base = 240;
-    var r = Math.round(base + (46 - base) * intensity);
-    var g = Math.round(base + (125 - base) * intensity);
-    var b = Math.round(base + (50 - base) * intensity);
+    const base = 240;
+    const r = Math.round(base + (46 - base) * intensity);
+    const g = Math.round(base + (125 - base) * intensity);
+    const b = Math.round(base + (50 - base) * intensity);
     compassBg.style.background = 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
@@ -101,11 +101,11 @@ function computeHeading(e) {
     if (e.webkitCompassHeading !== undefined) {
         return e.webkitCompassHeading;
     }
-    var alpha = e.alpha;
+    const alpha = e.alpha;
     if (alpha === null || alpha === undefined) return deviceHeading;
 
-    var screenAngle = getScreenAngle();
-    var heading;
+    const screenAngle = getScreenAngle();
+    let heading;
     switch (screenAngle) {
         case 90:  heading = (alpha + 90) % 360; break;
         case 180: heading = (alpha + 180) % 360; break;
@@ -116,23 +116,23 @@ function computeHeading(e) {
 }
 
 function angularDiff(a, b) {
-    var diff = (a - b + 360) % 360;
+    const diff = (a - b + 360) % 360;
     return diff > 180 ? diff - 360 : diff;
 }
 
 function handleOrientation(e) {
-    var raw = computeHeading(e);
+    const raw = computeHeading(e);
 
     if (filteredHeading === null) {
         filteredHeading = raw;
     } else {
-        var diff = angularDiff(raw, filteredHeading);
+        const diff = angularDiff(raw, filteredHeading);
         filteredHeading = (filteredHeading + diff * FILTER_ALPHA + 360) % 360;
     }
 
     deviceHeading = filteredHeading;
 
-    var now = Date.now();
+    const now = Date.now();
     if (now - lastRenderTime < MIN_UPDATE_MS) return;
     lastRenderTime = now;
 
@@ -143,7 +143,7 @@ async function activateCompass() {
     if (typeof DeviceOrientationEvent !== 'undefined' &&
         typeof DeviceOrientationEvent.requestPermission === 'function') {
         try {
-            var p = await DeviceOrientationEvent.requestPermission();
+            const p = await DeviceOrientationEvent.requestPermission();
             if (p === 'granted') {
                 startCompass();
             } else {
@@ -160,7 +160,7 @@ async function activateCompass() {
 }
 
 function startCompass() {
-    var evt = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
+    const evt = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
     window.addEventListener(evt, handleOrientation, true);
     compassActive = true;
     compassStatus.className = 'compass-status active';
@@ -195,7 +195,7 @@ function displayResult(lat, lng) {
 }
 
 function showFlipButton() {
-    var flipBtn = document.getElementById('flipBtn');
+    const flipBtn = document.getElementById('flipBtn');
     if (flipBtn) {
         flipBtn.style.display = 'block';
         flipBtn.textContent = calibrationOffset === 180 ? '↻ معايرة: مقلوبة' : '↻ معايرة';
@@ -203,7 +203,7 @@ function showFlipButton() {
     }
 }
 
-var locationTimeout = null;
+let locationTimeout = null;
 
 startBtn.addEventListener('click', function () {
     hideError();
@@ -252,7 +252,7 @@ startBtn.addEventListener('click', function () {
 function flipCalibration() {
     calibrationOffset = (calibrationOffset === 0) ? 180 : 0;
     if (compassActive) updateArrow();
-    var flipBtn = document.getElementById('flipBtn');
+    const flipBtn = document.getElementById('flipBtn');
     if (flipBtn) {
         flipBtn.textContent = calibrationOffset === 180 ? '↻ معايرة: مقلوبة' : '↻ معايرة';
         flipBtn.classList.toggle('flipped', calibrationOffset === 180);

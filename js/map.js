@@ -1,13 +1,17 @@
-var map = null;
+let map = null;
+
+function updateDistanceInfo(userLat, userLng) {
+    const dist = calculateDistanceKm(userLat, userLng, KAABA_LAT, KAABA_LNG);
+    const distEl = document.getElementById('distanceInfo');
+    if (distEl) {
+        distEl.textContent = 'المسافة بينك وبين الكعبة المشرفة: ' +
+            dist.toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + ' كم';
+    }
+}
 
 function initMap(userLat, userLng) {
     if (typeof L === 'undefined') {
-        var dist = calculateDistanceKm(userLat, userLng, KAABA_LAT, KAABA_LNG);
-        var distEl = document.getElementById('distanceInfo');
-        if (distEl) {
-            distEl.textContent = 'المسافة بينك وبين الكعبة المشرفة: ' +
-                dist.toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + ' كم';
-        }
+        updateDistanceInfo(userLat, userLng);
         return;
     }
 
@@ -28,14 +32,14 @@ function initMap(userLat, userLng) {
             maxZoom: 18
         }).addTo(map);
 
-        var userIcon = L.divIcon({
+        const userIcon = L.divIcon({
             className: '',
             html: '<div style="width:16px;height:16px;background:#1a73e8;border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>',
             iconSize: [16, 16],
             iconAnchor: [8, 8]
         });
 
-        var kaabaIcon = L.divIcon({
+        const kaabaIcon = L.divIcon({
             className: '',
             html: '<div style="width:32px;height:32px;background:#fbbf24;border:3px solid white;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;">🕋</div>',
             iconSize: [32, 32],
@@ -58,7 +62,7 @@ function initMap(userLat, userLng) {
             opacity: 0.5
         }).addTo(map);
 
-        var bounds = L.latLngBounds(
+        const bounds = L.latLngBounds(
             [userLat, userLng],
             [KAABA_LAT, KAABA_LNG]
         );
@@ -68,12 +72,7 @@ function initMap(userLat, userLng) {
             maxZoom: 6
         });
 
-        var dist = calculateDistanceKm(userLat, userLng, KAABA_LAT, KAABA_LNG);
-        var distEl = document.getElementById('distanceInfo');
-        if (distEl) {
-            distEl.textContent = 'المسافة بينك وبين الكعبة المشرفة: ' +
-                dist.toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + ' كم';
-        }
+        updateDistanceInfo(userLat, userLng);
 
         setTimeout(function () {
             map.invalidateSize();
