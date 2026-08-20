@@ -5,6 +5,7 @@ var startBtn = document.getElementById('startBtn');
 var compassStatus = document.getElementById('compassStatus');
 var compassStatusText = document.getElementById('compassStatusText');
 var qiblaArrow = document.getElementById('qiblaArrow');
+var compassBg = document.getElementById('compassBg');
 
 var qiblaBearing = null;
 var compassActive = false;
@@ -58,6 +59,8 @@ function updateArrow() {
 
     qiblaArrow.style.transform = 'translate(-50%, -50%) rotate(' + arrowRotation + 'deg)';
 
+    updateCompassBg(target);
+
     var isAligned = target < 10 || target > 350;
 
     if (isAligned) {
@@ -72,6 +75,19 @@ function updateArrow() {
         compassStatusText.textContent = 'حرّك الهاتف حتى يشير السهم للأعلى';
         hasVibrated = false;
     }
+}
+
+function updateCompassBg(target) {
+    if (!compassBg) return;
+
+    var distance = Math.min(target, 360 - target);
+    var intensity = 1 - (distance / 180);
+
+    var base = 240;
+    var r = Math.round(base + (46 - base) * intensity);
+    var g = Math.round(base + (125 - base) * intensity);
+    var b = Math.round(base + (50 - base) * intensity);
+    compassBg.style.background = 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
 function getScreenAngle() {

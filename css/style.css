@@ -79,6 +79,7 @@ body {
     border-radius: 50%;
     border: 2px solid var(--border);
     background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+    transition: background-color 0.3s ease;
 }
 
 .compass-bg::before {
