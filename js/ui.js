@@ -224,7 +224,6 @@ startBtn.addEventListener('click', function () {
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
 });
-}
 
 function flipCalibration() {
     calibrationOffset = (calibrationOffset === 0) ? 180 : 0;
