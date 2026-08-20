@@ -13,6 +13,7 @@ var filteredHeading = null;
 var calibrationOffset = 0;
 var hasVibrated = false;
 var lastRenderTime = 0;
+var arrowRotation = 0;
 var FILTER_ALPHA = 0.2;
 var MIN_UPDATE_MS = 50;
 
@@ -47,10 +48,17 @@ function updateArrow() {
     if (!compassActive || qiblaBearing === null) return;
 
     var effectiveBearing = (qiblaBearing + calibrationOffset + 360) % 360;
-    var angle = (effectiveBearing - deviceHeading + 360) % 360;
-    qiblaArrow.style.transform = 'translate(-50%, -50%) rotate(' + angle + 'deg)';
+    var target = (effectiveBearing - deviceHeading + 360) % 360;
 
-    var isAligned = angle < 10 || angle > 350;
+    var current = ((arrowRotation % 360) + 360) % 360;
+    var diff = target - current;
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    arrowRotation += diff;
+
+    qiblaArrow.style.transform = 'translate(-50%, -50%) rotate(' + arrowRotation + 'deg)';
+
+    var isAligned = target < 10 || target > 350;
 
     if (isAligned) {
         compassStatus.className = 'compass-status active aligned';
